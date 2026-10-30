@@ -189,6 +189,19 @@ function createSoundSystem(mockCtx) {
     wheelMiss: () => {
       [587, 523, 440, 392].forEach((f, i) => tone(f, 0.28, "sine", f, i * 0.1, 0.3));
     },
+    wheelDown: () => {
+      tone(370, 0.35, "sawtooth", 185, 0, 0.4);
+      tone(185, 0.45, "sine", 92, 0.18, 0.45);
+    },
+    wheelAid: () => {
+      [330, 392, 523].forEach((f, i) => tone(f, 0.28, "triangle", f, i * 0.08, 0.35));
+      tone(659, 0.4, "sine", 659, 0.24, 0.4);
+    },
+    wheelShieldBlock: () => {
+      noise(0.18, 1600, "bandpass", 0, 0.4);
+      tone(600, 0.35, "triangle", 300, 0, 0.35);
+      tone(900, 0.5, "sine", 900, 0.06, 0.3);
+    },
     victory: () => {
       const mel = [523, 523, 523, 659, 784, 659, 784, 1046];
       const times = [0, 0.14, 0.28, 0.45, 0.65, 0.85, 1.05, 1.3];
@@ -222,7 +235,8 @@ const expectedSounds = [
   "click", "start", "openQ", "tick", "timeUp", "reveal",
   "correct", "bothCorrect", "wrong", "build", "upgrade",
   "openWheel", "wheelTick", "wheelUp2", "wheelUp1",
-  "wheelShield", "wheelRaid", "wheelSteal", "wheelMiss", "victory"
+  "wheelShield", "wheelRaid", "wheelSteal", "wheelMiss", "victory",
+  "wheelDown", "wheelAid", "wheelShieldBlock"
 ];
 
 // Check all sound keys exist

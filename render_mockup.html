@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 60px 80px 90px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .macbook {
+    position: relative;
+    width: 1400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* --- SCREEN LID --- */
+  .lid {
+    position: relative;
+    width: 1200px;
+    height: 750px;
+    background: #0f1012;
+    border-radius: 20px 20px 4px 4px;
+    padding: 14px 14px 20px 14px;
+    box-shadow:
+      inset 0 0 0 1.5px #484b50,
+      inset 0 1.5px 0 0.5px rgba(255,255,255,0.25),
+      0 0 1px 1px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Display bezel & screen */
+  .screen-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px 10px 4px 4px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  .screen-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #f6efdc;
+    display: block;
+  }
+
+  /* Camera notch */
+  .camera-notch {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 16px;
+    background: #0f1012;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .lens {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #040810;
+    box-shadow: inset 0 0 2px #1e3a60, 0 0 1px rgba(255,255,255,0.2);
+  }
+  .sensor {
+    width: 3.5px;
+    height: 3.5px;
+    border-radius: 50%;
+    background: #081208;
+    box-shadow: 0 0 1px rgba(0,255,100,0.4);
+  }
+
+  /* Glass reflection */
+  .glass-glare {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      128deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.08) 22%,
+      rgba(255, 255, 255, 0.02) 36%,
+      transparent 45%
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* --- HINGE --- */
+  .hinge {
+    width: 340px;
+    height: 8px;
+    background: linear-gradient(180deg, #0a0a0c 0%, #1c1d20 100%);
+    border-radius: 0 0 3px 3px;
+    margin-top: -2px;
+    z-index: 2;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
+  }
+
+  /* --- BASE / CHASSIS --- */
+  .base {
+    position: relative;
+    width: 1380px;
+    height: 22px;
+    background: linear-gradient(180deg, #e1e4e8 0%, #bcc1c8 45%, #8f949c 85%, #6a6e75 100%);
+    border-radius: 2px 2px 14px 14px;
+    margin-top: -4px;
+    z-index: 3;
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,0.9),
+      inset 0 -1px 2px rgba(0,0,0,0.4),
+      0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  /* Thumb groove cutout */
+  .thumb-groove {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 7px;
+    background: linear-gradient(180deg, #6c7077 0%, #a2a6ad 100%);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  /* Feet */
+  .feet {
+    position: absolute;
+    bottom: -3px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 90px;
+    z-index: 1;
+  }
+  .foot {
+    width: 48px;
+    height: 4px;
+    background: #1c1d1f;
+    border-radius: 3px;
+  }
+
+  /* --- REALISTIC SHADOW --- */
+  .shadow-wrap {
+    position: absolute;
+    bottom: -45px;
+    width: 1420px;
+    height: 70px;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .contact-shadow {
+    position: absolute;
+    top: 0;
+    left: 40px;
+    right: 40px;
+    height: 18px;
+    background: rgba(30, 20, 10, 0.55);
+    border-radius: 50%;
+    filter: blur(8px);
+  }
+  .ambient-shadow {
+    position: absolute;
+    top: 4px;
+    left: 20px;
+    right: 20px;
+    height: 45px;
+    background: rgba(50, 32, 18, 0.32);
+    border-radius: 50%;
+    filter: blur(24px);
+  }
+</style>
+</head>
+<body>
+
+<div class="macbook">
+  <div class="lid">
+    <div class="camera-notch">
+      <div class="sensor"></div>
+      <div class="lens"></div>
+    </div>
+    <div class="screen-frame">
+      <img src="screen_1080p.png" alt="Game Screen">
+      <div class="glass-glare"></div>
+    </div>
+  </div>
+
+  <div class="hinge"></div>
+
+  <div class="base">
+    <div class="thumb-groove"></div>
+    <div class="feet">
+      <div class="foot"></div>
+      <div class="foot"></div>
+    </div>
+  </div>
+
+  <div class="shadow-wrap">
+    <div class="ambient-shadow"></div>
+    <div class="contact-shadow"></div>
+  </div>
+</div>
+
+</body>
+</html>
