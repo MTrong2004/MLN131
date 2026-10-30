@@ -504,7 +504,7 @@ const WHEEL = [
 ];
 
 /* ================= TRẠNG THÁI ================= */
-let teams, qDone, curQ, timerInt, timeLeft, spinQueue, wheelTeam, wheelRot, spinning;
+let teams, qDone, curQ, timerInt, timeLeft, spinQueue, wheelTeam, wheelRot, spinning, isTieBreaker = false;
 let building=new Set(); // đội đang trong hiệu ứng xây dựng ở panel bên
 
 /* ================= HỆ THỐNG ÂM THANH ================= */
@@ -813,6 +813,7 @@ function nextQuestion(){
 
 /* ================= VÒNG QUAY ================= */
 function openWheel(ti){
+  isTieBreaker=false;
   wheelTeam=ti; spinning=false; wheelRot=0;
   sound.play("openWheel");
   document.getElementById("wheel-title").innerHTML="🎡 Vòng quay cơ&nbsp;hội · "+teams[ti].name;
@@ -824,9 +825,13 @@ function openWheel(ti){
     else descEl.innerHTML=`⚖️ <b>Thế trận giằng co!</b> Hai đội đang ngang tài ngang sức — Mỗi lượt quay đều có thể xoay chuyển cục&nbsp;diện!`;
   }
   document.getElementById("spin-res").textContent="";
-  document.getElementById("btn-spin").style.display="";
+  const spinBtn=document.getElementById("btn-spin");
+  spinBtn.style.display="";
+  spinBtn.innerHTML="Mạo hiểm quay! 🎰";
   document.getElementById("btn-skip-wheel").style.display="";
-  document.getElementById("btn-wheel-done").style.display="none";
+  const doneBtn=document.getElementById("btn-wheel-done");
+  doneBtn.style.display="none";
+  doneBtn.innerHTML="Hoàn tất ✅";
   drawWheel(0);
   document.getElementById("ov-wheel").classList.add("show");
 }
@@ -1070,6 +1075,23 @@ function spin(){
   sound.play("click");
   document.getElementById("btn-spin").style.display="none";
   document.getElementById("btn-skip-wheel").style.display="none";
+  if(isTieBreaker){
+    const winner=Math.random()<0.5?0:1;
+    const goodIndices=WHEEL.map((s,i)=>(s.effect==="up1"||s.effect==="up2"||s.effect==="steal")?i:-1).filter(i=>i>=0);
+    const idx=goodIndices[Math.floor(Math.random()*goodIndices.length)];
+    wheelTeam=winner;
+    const n=WHEEL.length, seg=360/n;
+    const target=(((-90-(idx*seg+seg/2))%360)+360)%360;
+    const delta=((target-wheelRot)%360+360)%360 + 360*6;
+    const from=wheelRot, start=performance.now(), dur=3400;
+    let lastPin=-1;
+    (function anim(t){ const p=Math.min(1,(t-start)/dur), e=1-Math.pow(1-p,3);
+      wheelRot=from+delta*e; drawWheel(wheelRot);
+      const curPin=Math.floor(wheelRot/15);
+      if(curPin!==lastPin){ lastPin=curPin; sound.play("wheelTick"); }
+      if(p<1) requestAnimationFrame(anim); else applyTieBreaker(winner); })(start);
+    return;
+  }
   const n=WHEEL.length, idx=pickWheelIndex(wheelTeam), seg=360/n;
   const target=(((-90-(idx*seg+seg/2))%360)+360)%360;
   const delta=((target-wheelRot)%360+360)%360 + 360*6;
@@ -1157,9 +1179,50 @@ function applyWheel(idx){
   res.classList.remove("pop"); void res.offsetWidth; res.classList.add("pop");
   spinning=false;
 }
+function applyTieBreaker(winner){
+  const loser=1-winner;
+  if(teams[winner].level===TIERS.length-1 && teams[loser].level===TIERS.length-1){
+    teams[loser].level=TIERS.length-2;
+  } else {
+    teams[winner].level=Math.min(TIERS.length-1, teams[winner].level+1);
+  }
+  renderAll();
+  sound.play("victory");
+  const res=document.getElementById("spin-res");
+  res.innerHTML=`🏆 <b>ĐỊNH ĐOẠT THÀNH CÔNG:</b> Chúc mừng <b>${teams[winner].name}</b> bứt phá giành ngôi <b>QUÁN QUÂN</b>!`;
+  const doneBtn=document.getElementById("btn-wheel-done");
+  doneBtn.style.display="";
+  doneBtn.innerHTML="Xem vinh danh Quán quân 🏆";
+  res.classList.remove("pop"); void res.offsetWidth; res.classList.add("pop");
+  spinning=false;
+}
+function openTieBreaker(){
+  isTieBreaker=true;
+  spinning=false; wheelRot=0;
+  sound.play("openWheel");
+  document.getElementById("wheel-title").innerHTML="🎡 Vòng quay định&nbsp;đoạt · Chung&nbsp;kết 🏆";
+  const descEl=document.getElementById("wheel-desc");
+  if(descEl){
+    descEl.innerHTML="⚖️ <b>Hai đội đang hòa sát nút!</b> Vòng quay may mắn định đoạt sẽ tìm ra đội duy nhất giành chiến&nbsp;thắng chung&nbsp;cuộc!";
+  }
+  document.getElementById("spin-res").textContent="";
+  const spinBtn=document.getElementById("btn-spin");
+  spinBtn.style.display="";
+  spinBtn.innerHTML="Quay định đoạt Quán quân! 🏆";
+  document.getElementById("btn-skip-wheel").style.display="none";
+  const doneBtn=document.getElementById("btn-wheel-done");
+  doneBtn.style.display="none";
+  drawWheel(0);
+  document.getElementById("ov-wheel").classList.add("show");
+}
 function closeWheel(){
   sound.play("click");
   document.getElementById("ov-wheel").classList.remove("show");
+  if(isTieBreaker){
+    isTieBreaker=false;
+    setTimeout(showEnd, 300);
+    return;
+  }
   if(spinQueue.length>1){
     spinQueue.shift();
     setTimeout(()=>openWheel(spinQueue[0]), 300);
@@ -1171,14 +1234,19 @@ function closeWheel(){
 
 /* ================= KẾT THÚC ================= */
 function showEnd(){
-  sound.play("victory");
   const l0=teams[0].level, l1=teams[1].level;
-  let win;
-  if(l0>l1) win=`🏆 Chúc mừng <b style="color:var(--orange)">${teams[0].name}</b> xuất sắc dẫn đầu — xây dựng thành công “${TIERS[l0].name}”!`;
-  else if(l1>l0) win=`🏆 Chúc mừng <b style="color:var(--orange)">${teams[1].name}</b> xuất sắc dẫn đầu — xây dựng thành công “${TIERS[l1].name}”!`;
-  else win=`🤝 <b>Kết quả tuyệt vời!</b> Cả hai bản làng cùng đạt “${TIERS[l0].name}” — cùng chung sức tiến lên CNXH!`;
+  if(l0===l1){
+    openTieBreaker();
+    return;
+  }
+  sound.play("victory");
+  const winIdx=l0>l1?0:1, loseIdx=1-winIdx;
+  const w=teams[winIdx], f=teams[loseIdx];
+  const winMsg=`🏆 Chúc mừng <b style="color:var(--orange)">${w.name}</b> xuất sắc giành chiến&nbsp;thắng chung&nbsp;cuộc!<br>`+
+    `<span style="font-size:14px; color:var(--ink-soft); font-weight:600;">🥈 ${f.name} về nhì với thành tích xuất sắc: ${TIERS[f.level].name} (${f.level+1}/6)</span>`;
   document.getElementById("end-detail").innerHTML=
-    `${teams[0].name}: ${rankName(l0)} — cấp ${l0+1}/6<br>${teams[1].name}: ${rankName(l1)} — cấp ${l1+1}/6<br><br>${win}`;
+    `🥇 <b>${w.name}</b>: ${rankName(w.level)} — Cấp ${w.level+1}/6 (Quán quân)<br>`+
+    `🥈 <b>${f.name}</b>: ${rankName(f.level)} — Cấp ${f.level+1}/6 (Á quân)<br><br>${winMsg}`;
   document.getElementById("ov-end").classList.add("show"); confetti();
 }
 

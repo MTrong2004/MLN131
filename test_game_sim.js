@@ -14,14 +14,15 @@ const dom = {
 const win = { AudioContext: null, webkitAudioContext: null, localStorage: { getItem: () => null } };
 const loc = { hash: '' };
 
-const simEnv = new Function('document', 'window', 'location', code + '; return { startGame, pickWheelIndex, WHEEL, TIERS, getTeams: () => teams };');
+const simEnv = new Function('document', 'window', 'location', code + '; return { startGame, pickWheelIndex, WHEEL, TIERS, getTeams: () => teams, applyTieBreaker };');
 const env = simEnv(dom, win, loc);
 env.startGame();
 const currentTeams = env.getTeams();
-const { pickWheelIndex, WHEEL } = env;
+const { pickWheelIndex, WHEEL, applyTieBreaker } = env;
 
-let totalGap = 0, ties = 0, diff1 = 0, diff2plus = 0;
-const MATCHES = 1000;
+let ties = 0, diff1 = 0, diff2plus = 0;
+let team0Wins = 0, team1Wins = 0;
+const MATCHES = 2000;
 
 for(let m = 0; m < MATCHES; m++){
   currentTeams[0].level = 0; currentTeams[0].shield = false;
@@ -62,17 +63,28 @@ for(let m = 0; m < MATCHES; m++){
       }
     }
   }
+
+  // Kết thúc 6 câu: nếu hòa -> VÒNG QUAY ĐỊNH ĐOẠT
+  if(currentTeams[0].level === currentTeams[1].level){
+    const tbWinner = Math.random() < 0.5 ? 0 : 1;
+    applyTieBreaker(tbWinner);
+  }
+
   let finalGap = Math.abs(currentTeams[0].level - currentTeams[1].level);
-  totalGap += finalGap;
   if(finalGap === 0) ties++;
   else if(finalGap === 1) diff1++;
   else diff2plus++;
+
+  if(currentTeams[0].level > currentTeams[1].level) team0Wins++;
+  else if(currentTeams[1].level > currentTeams[0].level) team1Wins++;
 }
 
-const avgGap = totalGap / MATCHES;
-const closeRate = (ties + diff1) / MATCHES;
+assert.strictEqual(ties, 0, "TUYỆT ĐỐI KHÔNG CÓ TRẬN HÒA (Phải có đúng 1 đội thắng)");
+assert(team0Wins + team1Wins === MATCHES, "Tất cả các trận đều phải tìm ra 1 đội thắng duy nhất");
+assert(diff1 / MATCHES > 0.70, `Tỉ lệ thắng sát nút (1 cấp) phải > 70%, thực tế đạt ${(diff1 / MATCHES * 100).toFixed(1)}%`);
 
-assert(avgGap < 1.2, `Average gap should be under 1.2 levels, got ${avgGap}`);
-assert(closeRate > 0.70, `Close rate should be > 70%, got ${closeRate}`);
-
-console.log(`PASS: Simulated ${MATCHES} matches. Avg gap: ${avgGap.toFixed(2)} levels, Close matches: ${(closeRate * 100).toFixed(1)}%`);
+console.log(`PASS: Mô phỏng ${MATCHES} trận đấu:`);
+console.log(`- Tỉ lệ hòa (cả 2 đội cùng thắng): 0% (Đã triệt tiêu hoàn toàn)`);
+console.log(`- Tỉ lệ có 1 đội thắng duy nhất: 100% (Đội 1: ${(team0Wins/MATCHES*100).toFixed(1)}%, Đội 2: ${(team1Wins/MATCHES*100).toFixed(1)}%)`);
+console.log(`- Tỉ lệ thắng sát nút (chênh lệch đúng 1 cấp): ${(diff1/MATCHES*100).toFixed(1)}%`);
+console.log(`- Tỉ lệ cách biệt 2 cấp trở lên: ${(diff2plus/MATCHES*100).toFixed(1)}%`);
