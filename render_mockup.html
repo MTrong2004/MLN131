@@ -10,13 +10,13 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 60px 80px 90px;
+    padding: 40px 60px 80px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
   .macbook {
     position: relative;
-    width: 1400px;
+    width: 1320px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,15 +25,15 @@
   /* --- SCREEN LID --- */
   .lid {
     position: relative;
-    width: 1200px;
-    height: 750px;
-    background: #0f1012;
-    border-radius: 20px 20px 4px 4px;
-    padding: 14px 14px 20px 14px;
+    width: 1220px;
+    height: 708px;
+    background: #18191b;
+    border-radius: 18px 18px 3px 3px;
+    padding: 10px 10px 14px 10px;
     box-shadow:
-      inset 0 0 0 1.5px #484b50,
-      inset 0 1.5px 0 0.5px rgba(255,255,255,0.25),
-      0 0 1px 1px rgba(0,0,0,0.6);
+      inset 0 0 0 1px #3a3d42,
+      inset 0 1px 0 0.5px rgba(255,255,255,0.3),
+      0 0 1px 1px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,51 +42,49 @@
   /* Display bezel & screen */
   .screen-frame {
     position: relative;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px 10px 4px 4px;
+    width: 1200px;
+    height: 675px;
+    border-radius: 10px;
     overflow: hidden;
-    background: #000;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    background: #f6efdc;
   }
 
   .screen-frame img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    background: #f6efdc;
+    object-fit: cover;
     display: block;
   }
 
   /* Camera notch */
   .camera-notch {
     position: absolute;
-    top: 14px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 130px;
-    height: 16px;
-    background: #0f1012;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    width: 110px;
+    height: 14px;
+    background: #18191b;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
     z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 7px;
   }
   .lens {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: #040810;
-    box-shadow: inset 0 0 2px #1e3a60, 0 0 1px rgba(255,255,255,0.2);
+    background: #020509;
+    box-shadow: inset 0 0 1.5px #1e3a60, 0 0 1px rgba(255,255,255,0.25);
   }
   .sensor {
-    width: 3.5px;
-    height: 3.5px;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
-    background: #081208;
+    background: #051008;
     box-shadow: 0 0 1px rgba(0,255,100,0.4);
   }
 
@@ -95,11 +93,11 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(
-      128deg,
-      rgba(255, 255, 255, 0.16) 0%,
-      rgba(255, 255, 255, 0.08) 22%,
-      rgba(255, 255, 255, 0.02) 36%,
-      transparent 45%
+      126deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.08) 20%,
+      rgba(255, 255, 255, 0.015) 34%,
+      transparent 42%
     );
     pointer-events: none;
     z-index: 5;
@@ -107,26 +105,25 @@
 
   /* --- HINGE --- */
   .hinge {
-    width: 340px;
-    height: 8px;
-    background: linear-gradient(180deg, #0a0a0c 0%, #1c1d20 100%);
+    width: 320px;
+    height: 7px;
+    background: linear-gradient(180deg, #0e0f11 0%, #1e1f22 100%);
     border-radius: 0 0 3px 3px;
     margin-top: -2px;
     z-index: 2;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
   }
 
   /* --- BASE / CHASSIS --- */
   .base {
     position: relative;
-    width: 1380px;
-    height: 22px;
-    background: linear-gradient(180deg, #e1e4e8 0%, #bcc1c8 45%, #8f949c 85%, #6a6e75 100%);
+    width: 1300px;
+    height: 20px;
+    background: linear-gradient(180deg, #e4e7eb 0%, #bcc1c8 45%, #8c929a 85%, #666a72 100%);
     border-radius: 2px 2px 14px 14px;
     margin-top: -4px;
     z-index: 3;
     box-shadow:
-      inset 0 1.5px 0 rgba(255,255,255,0.9),
+      inset 0 1.5px 0 rgba(255,255,255,0.95),
       inset 0 -1px 2px rgba(0,0,0,0.4),
       0 2px 4px rgba(0,0,0,0.3);
   }
@@ -137,12 +134,12 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 150px;
-    height: 7px;
-    background: linear-gradient(180deg, #6c7077 0%, #a2a6ad 100%);
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+    width: 140px;
+    height: 6px;
+    background: linear-gradient(180deg, #5c6068 0%, #9a9ea6 100%);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    box-shadow: inset 0 1px 1.5px rgba(0,0,0,0.5);
   }
 
   /* Feet */
@@ -152,11 +149,11 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 0 90px;
+    padding: 0 80px;
     z-index: 1;
   }
   .foot {
-    width: 48px;
+    width: 44px;
     height: 4px;
     background: #1c1d1f;
     border-radius: 3px;
@@ -165,9 +162,9 @@
   /* --- REALISTIC SHADOW --- */
   .shadow-wrap {
     position: absolute;
-    bottom: -45px;
-    width: 1420px;
-    height: 70px;
+    bottom: -40px;
+    width: 1340px;
+    height: 65px;
     z-index: 0;
     pointer-events: none;
   }
@@ -176,7 +173,7 @@
     top: 0;
     left: 40px;
     right: 40px;
-    height: 18px;
+    height: 16px;
     background: rgba(30, 20, 10, 0.55);
     border-radius: 50%;
     filter: blur(8px);
@@ -184,12 +181,12 @@
   .ambient-shadow {
     position: absolute;
     top: 4px;
-    left: 20px;
-    right: 20px;
-    height: 45px;
-    background: rgba(50, 32, 18, 0.32);
+    left: 15px;
+    right: 15px;
+    height: 40px;
+    background: rgba(50, 32, 18, 0.3);
     border-radius: 50%;
-    filter: blur(24px);
+    filter: blur(22px);
   }
 </style>
 </head>
