@@ -212,8 +212,29 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
 @keyframes cfUp{0%{opacity:1; transform:translateY(0) scale(.6);}100%{opacity:0; transform:translateY(-90px) scale(1.3) rotate(40deg);}}
 /* wheel */
 #wheel-wrap{text-align:center; perspective:750px;}
-#wheel{max-width:340px; width:100%; transform:rotateX(10deg); filter:drop-shadow(0 14px 18px rgba(74,52,35,.38)); transition:transform .3s ease;}
-#spin-res{font-size:18px; font-weight:800; margin-top:12px; min-height:28px; color:var(--orange);}
+#wheel{max-width:320px; width:100%; transform:rotateX(10deg); filter:drop-shadow(0 14px 18px rgba(74,52,35,.38)); transition:transform .3s ease;}
+#spin-res{font-size:17px; font-weight:800; margin-top:8px; min-height:26px; color:var(--orange); text-wrap:balance;}
+/* wheel modal layout */
+.wheel-grid{display:flex; align-items:center; justify-content:center; gap:20px; margin-top:8px;}
+.wheel-col-left{flex:0 0 320px; text-align:center;}
+.wheel-col-right{flex:1 1 340px; max-width:400px; text-align:left;}
+@media(max-width:760px){
+  .wheel-grid{flex-direction:column; gap:12px;}
+  .wheel-col-left,.wheel-col-right{flex:1 1 auto; max-width:100%; width:100%;}
+}
+.wheel-table{background:#fffdf9; border:2.5px solid var(--orange); border-radius:14px; padding:12px 14px; box-shadow:3px 3px 0 #ecdab6;}
+.wt-title{font-size:13.5px; font-weight:800; text-transform:uppercase; color:var(--ink); margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; padding-bottom:6px; border-bottom:1.5px dashed #e8d9b8;}
+.wt-sec{margin-bottom:8px;}
+.wt-sec:last-of-type{margin-bottom:0;}
+.wt-sec-title{font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; display:flex; align-items:center; gap:5px;}
+.wt-sec.good .wt-sec-title{color:#27ae60;}
+.wt-sec.bad .wt-sec-title{color:#c0392b;}
+.wt-sec.neutral .wt-sec-title{color:#546e7a;}
+.wt-item{display:flex; align-items:center; justify-content:space-between; padding:4px 8px; border-radius:8px; font-size:12.5px; margin-bottom:4px; background:#fff; border:1px solid rgba(74,52,35,.1);}
+.wt-badge{font-weight:800; font-size:11px; padding:2px 7px; border-radius:6px; color:#fff; flex-shrink:0;}
+.wt-desc{font-weight:600; color:var(--ink-soft); font-size:12px; text-align:right;}
+.wt-desc b{color:var(--ink);}
+.wt-note{font-size:11px; color:var(--ink-soft); text-align:center; margin-top:8px; padding-top:6px; border-top:1px dashed #e8d9b8; line-height:1.4;}
 /* end */
 #end-title{font-size:clamp(30px,5vw,48px); text-align:center;}
 #end-detail{text-align:center; font-size:17px; line-height:1.8; margin:16px 0;}
@@ -310,15 +331,70 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
 
 <!-- ============ WHEEL MODAL ============ -->
 <div class="overlay" id="ov-wheel">
-  <div class="modal" style="max-width:480px; text-align:center;">
+  <div class="modal" style="max-width:800px; width:95%; text-align:center;">
     <h2 id="wheel-title">🎡 Vòng quay cơ&nbsp;hội</h2>
-    <p id="wheel-desc" style="font-size:13px; line-height:1.5; color:var(--ink-soft); margin:6px auto 14px; max-width:400px; text-wrap:pretty;">⚠️ Vòng quay là <b>lựa chọn mạo&nbsp;hiểm</b> (cơ hội nhảy cấp nhưng có nguy cơ tự lùi cấp hoặc chi viện đội bạn). Bạn có thể mạo&nbsp;hiểm hoặc chọn bảo&nbsp;toàn thành&nbsp;quả!</p>
-    <div id="wheel-wrap"><canvas id="wheel" width="340" height="340"></canvas></div>
-    <div id="spin-res"></div>
-    <div class="row" style="margin-top:14px; justify-content:center; gap:8px;">
-      <button class="btn" id="btn-spin" onclick="spin()">Mạo hiểm quay! 🎰</button>
-      <button class="btn ghost" id="btn-skip-wheel" onclick="skipWheel()">Bảo toàn cấp 🛡️</button>
-      <button class="btn ghost" id="btn-wheel-done" onclick="closeWheel()" style="display:none">Hoàn tất ✅</button>
+    <p id="wheel-desc" style="font-size:13px; line-height:1.45; color:var(--ink-soft); margin:3px auto 10px; max-width:660px; text-wrap:pretty;">⚠️ Vòng quay là <b>lựa chọn mạo&nbsp;hiểm</b> (cơ hội nhảy cấp nhưng có nguy cơ tự lùi cấp hoặc chi viện đội bạn). Bạn có thể mạo&nbsp;hiểm hoặc chọn bảo&nbsp;toàn thành&nbsp;quả!</p>
+    
+    <div class="wheel-grid">
+      <div class="wheel-col-left">
+        <div id="wheel-wrap"><canvas id="wheel" width="340" height="340"></canvas></div>
+        <div id="spin-res"></div>
+        <div class="row" style="margin-top:10px; justify-content:center; gap:8px;">
+          <button class="btn" id="btn-spin" onclick="spin()">Mạo hiểm quay! 🎰</button>
+          <button class="btn ghost" id="btn-skip-wheel" onclick="skipWheel()">Bảo toàn cấp 🛡️</button>
+          <button class="btn ghost" id="btn-wheel-done" onclick="closeWheel()" style="display:none">Hoàn tất ✅</button>
+        </div>
+      </div>
+
+      <div class="wheel-col-right">
+        <div class="wheel-table">
+          <div class="wt-title">
+            <span>📋 Bảng phân loại vật phẩm</span>
+            <span style="font-size:11px; color:var(--orange); font-weight:700;">6 ô quay</span>
+          </div>
+
+          <!-- Nhóm có lợi -->
+          <div class="wt-sec good">
+            <div class="wt-sec-title">🟢 Nhóm có lợi (3 ô · Cơ hội bứt phá)</div>
+            <div class="wt-item">
+              <span class="wt-badge" style="background:#d9531f">🚀 TĂNG TỐC</span>
+              <span class="wt-desc">Nhảy vọt <b>+2 cấp</b> phát&nbsp;triển</span>
+            </div>
+            <div class="wt-item">
+              <span class="wt-badge" style="background:#d4ac0d">⬆️ TIẾN 1 CẤP</span>
+              <span class="wt-desc">Tiến thêm <b>+1 cấp</b> vững&nbsp;chắc</span>
+            </div>
+            <div class="wt-item">
+              <span class="wt-badge" style="background:#27ae60">🛡️ KHIÊN HỘ</span>
+              <span class="wt-desc">Nhận <b>Khiên bảo&nbsp;hộ</b> chặn biến&nbsp;cố</span>
+            </div>
+          </div>
+
+          <!-- Nhóm bất lợi -->
+          <div class="wt-sec bad">
+            <div class="wt-sec-title">🔴 Nhóm bất lợi (2 ô · Rủi ro mạo hiểm)</div>
+            <div class="wt-item">
+              <span class="wt-badge" style="background:#c0392b">⚠️ THỬ THÁCH</span>
+              <span class="wt-desc">Bản làng <b>tự lùi 1 cấp</b> (khiên đỡ)</span>
+            </div>
+            <div class="wt-item">
+              <span class="wt-badge" style="background:#7d3c98">🤝 CHI VIỆN</span>
+              <span class="wt-desc">Đội bạn bất ngờ được <b>+1 cấp</b></span>
+            </div>
+          </div>
+
+          <!-- Nhóm trung lập -->
+          <div class="wt-sec neutral">
+            <div class="wt-sec-title">⚪ Nhóm trung lập (1 ô · An toàn)</div>
+            <div class="wt-item">
+              <span class="wt-badge" style="background:#78909c">🌿 HẸN LẦN SAU</span>
+              <span class="wt-desc"><b>Giữ nguyên</b> cấp độ hiện&nbsp;tại</span>
+            </div>
+          </div>
+
+          <div class="wt-note">💡 Tỷ lệ: <b>50%</b> có lợi · <b>33.3%</b> rủi ro bất&nbsp;lợi · <b>16.7%</b> an&nbsp;toàn</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
