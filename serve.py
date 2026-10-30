@@ -22,7 +22,7 @@ if sys.platform == 'win32':
 
 # Cấu hình mặc định
 DEFAULT_PORT = 8080
-TARGET_GAME_FILE = 'ban-lang-kieu-mau.html'
+TARGET_GAME_FILE = 'index.html'
 WATCH_EXTENSIONS = {'.html', '.js', '.css', '.json', '.svg', '.png', '.jpg', '.mp3', '.ogg'}
 DEBOUNCE_SEC = 0.35
 
@@ -142,7 +142,7 @@ class GameHTTPHandler(SimpleHTTPRequestHandler):
 
         # 2. Điều hướng trang chủ '/' hoặc '/index.html' vào file game
         target_file = None
-        if clean_path in ('/', '/index.html'):
+        if clean_path in ('/', '/index.html', '/ban-lang-kieu-mau.html', '/ban-lang-kieu-mau'):
             target_file = TARGET_GAME_FILE
         elif clean_path.endswith('.html'):
             local_fp = clean_path.lstrip('/')
