@@ -1,7 +1,9 @@
 const fs = require('fs');
+const path = require('path');
 const assert = require('assert');
 
-const html = fs.readFileSync('index.html', 'utf8');
+const htmlPath = fs.existsSync('index.html') ? 'index.html' : path.join(__dirname, '../index.html');
+const html = fs.readFileSync(htmlPath, 'utf8');
 const scriptMatch = html.match(/<script[\s\S]*?>([\s\S]*?)<\/script>/i);
 const code = scriptMatch[1];
 
