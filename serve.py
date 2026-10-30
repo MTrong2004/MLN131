@@ -33,13 +33,118 @@ LIVE_RELOAD_SCRIPT = """
 <!-- [LIVE RELOAD ACTIVE] -->
 <script id="__live_reload_script">
 (function() {
+  // ponytail: DOMParser + sessionStorage hot swap, nâng cấp lên Vite/HMR khi tách nhiều bundle
+  var lastSource = '';
+  try {
+    fetch(location.href, { cache: 'no-store' })
+      .then(function(r) { return r.text(); })
+      .then(function(t) { lastSource = t; })
+      .catch(function() {});
+  } catch(e) {}
+
+  // Phục hồi state sau khi reload
+  try {
+    var raw = sessionStorage.getItem('__dev_state');
+    if (raw) {
+      sessionStorage.removeItem('__dev_state');
+      var s = JSON.parse(raw);
+      if (s.name1 && document.getElementById('name1')) document.getElementById('name1').value = s.name1;
+      if (s.name2 && document.getElementById('name2')) document.getElementById('name2').value = s.name2;
+      if (s.activeScreen === 'screen-game' && s.teams) {
+        var startScr = document.getElementById('screen-start');
+        var gameScr = document.getElementById('screen-game');
+        if (startScr && gameScr) {
+          startScr.classList.remove('active');
+          gameScr.classList.add('active');
+          if (typeof teams !== 'undefined') teams = s.teams;
+          if (typeof qDone !== 'undefined') qDone = s.qDone;
+          if (typeof curQ !== 'undefined') curQ = s.curQ;
+          var t1 = (teams && teams[0]) ? teams[0].name : "Dãy 1";
+          var t2 = (teams && teams[1]) ? teams[1].name : "Dãy 2";
+          if (document.getElementById('btn-t1')) document.getElementById('btn-t1').textContent = t1 + " đúng ✅";
+          if (document.getElementById('btn-t2')) document.getElementById('btn-t2').textContent = t2 + " đúng ✅";
+          if (typeof renderAll === 'function') renderAll();
+          if (s.inQ && typeof openQuestion === 'function' && typeof curQ === 'number') openQuestion(curQ);
+        }
+      }
+      if (typeof s.scrollY === 'number') window.scrollTo(s.scrollX || 0, s.scrollY);
+    }
+  } catch (e) {}
+
+  // Nút bật/tắt tự động tải lại trang
+  var enabled = sessionStorage.getItem('__live_reload_enabled') !== '0';
+  var badge = document.createElement('div');
+  badge.id = '__live_badge';
+  badge.style.cssText = 'position:fixed;bottom:12px;right:12px;z-index:99999;font-family:sans-serif;font-size:12px;background:rgba(40,40,40,0.85);color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer;user-select:none;box-shadow:0 2px 8px rgba(0,0,0,0.25);';
+  function syncBadge(pending) {
+    if (!enabled) {
+      badge.innerHTML = '⏸️ Live Reload: <b>TẮT</b>' + (pending ? ' <span style="background:#e67e22;padding:2px 6px;border-radius:8px;font-weight:bold;margin-left:4px;">Tải lại ngay 🔄</span>' : '');
+      badge.style.background = pending ? '#a93226' : 'rgba(50,50,50,0.85)';
+    } else {
+      badge.innerHTML = '⚡ Hot Reload: <b>BẬT</b>';
+      badge.style.background = 'rgba(40,40,40,0.85)';
+    }
+  }
+  syncBadge(false);
+  var pending = false;
+  badge.onclick = function() {
+    if (pending && !enabled) { doReload(); return; }
+    enabled = !enabled;
+    sessionStorage.setItem('__live_reload_enabled', enabled ? '1' : '0');
+    syncBadge(pending);
+  };
+  document.body.appendChild(badge);
+
+  function doReload() {
+    try {
+      var act = document.querySelector('.screen.active');
+      var qp = document.getElementById('q-panel');
+      sessionStorage.setItem('__dev_state', JSON.stringify({
+        activeScreen: act ? act.id : 'screen-start',
+        inQ: qp && qp.style.display !== 'none',
+        name1: document.getElementById('name1') ? document.getElementById('name1').value : '',
+        name2: document.getElementById('name2') ? document.getElementById('name2').value : '',
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        teams: typeof teams !== 'undefined' ? teams : null,
+        qDone: typeof qDone !== 'undefined' ? qDone : null,
+        curQ: typeof curQ !== 'undefined' ? curQ : null
+      }));
+    } catch(e) {}
+    location.reload();
+  }
+
   try {
     var es = new EventSource('/__live_reload');
     es.onmessage = function(e) {
-      if (e.data === 'reload') {
-        console.log('[LIVE RELOAD] Phát hiện thay đổi, đang tải lại trang...');
-        location.reload();
-      }
+      if (e.data !== 'reload') return;
+      if (!enabled) { pending = true; syncBadge(true); return; }
+      fetch(location.href, { cache: 'no-store' })
+        .then(function(r) { return r.text(); })
+        .then(function(newSrc) {
+          if (!lastSource) { doReload(); return; }
+          var dp = new DOMParser();
+          var oDoc = dp.parseFromString(lastSource, 'text/html');
+          var nDoc = dp.parseFromString(newSrc, 'text/html');
+          var oS = oDoc.querySelector('script:not(#__live_reload_script)'), nS = nDoc.querySelector('script:not(#__live_reload_script)');
+          var scriptChanged = (oS ? oS.textContent : '') !== (nS ? nS.textContent : '');
+          var bodyChanged = (oDoc.body ? oDoc.body.innerHTML : '') !== (nDoc.body ? nDoc.body.innerHTML : '');
+          var oCss = oDoc.querySelector('style'), nCss = nDoc.querySelector('style');
+          var cssChanged = (oCss ? oCss.textContent : '') !== (nCss ? nCss.textContent : '');
+
+          // Nếu chỉ sửa style CSS: thay trực tiếp không reload trang
+          if (!scriptChanged && !bodyChanged && cssChanged && nCss) {
+            var curStyle = document.querySelector('style');
+            if (curStyle) {
+              curStyle.textContent = nCss.textContent;
+              lastSource = newSrc;
+              if (typeof toast === 'function') toast('⚡ Đã cập nhật CSS (không tải lại trang)');
+              return;
+            }
+          }
+          doReload();
+        })
+        .catch(doReload);
     };
   } catch (err) {}
 })();
@@ -176,6 +281,8 @@ def run_self_check():
     sample = "<html><body><h1>Test</h1></body></html>"
     injected = inject_live_reload(sample)
     assert "__live_reload_script" in injected, "Phải tiêm được script reload"
+    assert "__dev_state" in injected, "Phải hỗ trợ lưu và phục hồi dev state"
+    assert "Hot Reload" in injected, "Phải hỗ trợ hot reload CSS"
     assert "</body>" in injected, "Thẻ body phải được giữ nguyên"
     
     # Kiểm tra cổng ngẫu nhiên
