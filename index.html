@@ -114,7 +114,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
 .team h2{font-size:22px; margin-bottom:2px;}
 .vrank{display:inline-block; background:#fbeed3; border:2px solid var(--gold); color:#8a6d1f; border-radius:99px; padding:2px 12px; font-size:11px; font-weight:800; text-transform:uppercase; margin-bottom:6px;}
 .village .vem svg{width:100%; max-width:120px; height:auto; filter:drop-shadow(2px 3px 0 #e8d9b8);}
-.village .vname{font-size:15px; font-weight:900; text-transform:uppercase; color:var(--orange); margin:4px 0 6px;}
+.village .vname{font-size:15px; font-weight:900; text-transform:uppercase; color:var(--orange); margin:4px 0 6px; text-wrap:balance; word-break:keep-all;}
 .vdots{display:flex; gap:6px; justify-content:center; margin-bottom:4px;}
 .vdots span{width:14px; height:14px; border-radius:50%; border:2px solid var(--orange); background:#fff;}
 .vdots span.on{background:var(--orange);}
@@ -158,9 +158,10 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
   display:flex; gap:10px; align-items:flex-start; text-align:left;
   background:#fff; border:2px solid #e0cfa4; border-radius:10px;
   padding:8px 12px; font-family:inherit; font-size:clamp(13px,0.95vw,15px);
-  font-weight:600; color:var(--ink); cursor:default; line-height:1.4;
+  font-weight:600; color:var(--ink); cursor:pointer; line-height:1.4;
   transition:all .18s ease;
 }
+.opt:hover{border-color:var(--orange); background:#fffdf8; transform:translateY(-1px);}
 .opt .k{
   background:var(--orange); color:#fff; font-weight:900;
   width:26px; height:26px; border-radius:6px; flex:none;
@@ -187,7 +188,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
 .upcard .evolve{display:flex; align-items:center; gap:6px; justify-content:center;}
 .upcard .evolve .em svg{width:100%; max-width:55px; height:auto; display:block;}
 .upcard .evolve .arr{font-size:16px; font-weight:900;}
-.upcard .lbl{font-size:10px; font-weight:700; margin-top:2px; color:var(--ink-soft); max-width:100px;}
+.upcard .lbl{font-size:10px; font-weight:700; margin-top:2px; color:var(--ink-soft); max-width:100px; text-wrap:balance; word-break:keep-all;}
 
 #q-panel .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; justify-content:center;}
 #q-panel .btn{font-size:13.5px; padding:8px 16px; border-radius:10px; border-width:2.5px;}
@@ -229,7 +230,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
 .wac-evolve{display:flex; align-items:center; justify-content:space-around; gap:4px;}
 .wac-tier{flex:1 1 0; max-width:130px; text-align:center;}
 .wac-tier .wac-svg svg{width:100%; max-width:65px; height:auto; display:block; margin:0 auto; filter:drop-shadow(1px 2px 0 #e8d9b8);}
-.wac-name{font-size:10.5px; font-weight:800; color:var(--ink); line-height:1.2; margin-top:2px; min-height:22px;}
+.wac-name{font-size:10.5px; font-weight:800; color:var(--ink); line-height:1.2; margin-top:2px; min-height:22px; text-wrap:balance; word-break:keep-all;}
 .wac-rank{font-size:9.5px; font-weight:700; color:var(--ink-soft);}
 .wac-arrow{flex:0 0 auto; text-align:center; padding:0 4px;}
 .wac-arrow .wac-icon{font-size:18px; line-height:1;}
@@ -315,7 +316,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
   <p class="subtitle"><b>Vấn đề dân tộc trong thời kỳ quá độ lên chủ nghĩa xã&nbsp;hội</b><br>
   Hai dãy lớp là hai bản làng — chung sức thi đua, cùng nhau tiến&nbsp;bộ!</p>
   <ul class="rules">
-    <li>❓ <b>6 câu hỏi</b> (60&nbsp;giây/câu) — Hai đội đồng loạt giơ bảng chọn đáp&nbsp;án.</li>
+    <li>❓ <b>6 câu hỏi</b> (20&nbsp;giây/câu) — Hai đội đồng loạt giơ bảng chọn đáp&nbsp;án.</li>
     <li>⬆️ Trả lời đúng, <b>bản&nbsp;làng nâng&nbsp;cấp diện mạo</b> — từng bước chuyển mình lên chuẩn xã kiểu mẫu&nbsp;XHCN!</li>
     <li>🎡 Cơ hội <b>quay thưởng may mắn</b> — tăng tốc thăng cấp, nhận khiên bảo hộ hoặc bứt&nbsp;phá thi&nbsp;đua.</li>
     <li>🤝 Nếu <b>cả hai đội cùng đúng</b>, cả hai bản&nbsp;làng đều được thăng&nbsp;cấp và cùng nhận lượt&nbsp;quay!</li>
@@ -816,9 +817,9 @@ function showUpgradeResult(before){
     if(teams[ti].level>before[ti]){
       h+=`<div class="upcard lvlup"><div class="tname">✨ ${teams[ti].name} nâng cấp diện mạo!</div>
       <div class="evolve">
-        <div><div class="em">${TIERS[before[ti]].art}</div><div class="lbl">${TIERS[before[ti]].name}</div></div>
+        <div><div class="em">${TIERS[before[ti]].art}</div><div class="lbl">${TIERS[before[ti]].lineName}</div></div>
         <div class="arr">➡️</div>
-        <div><div class="em">${TIERS[teams[ti].level].art}</div><div class="lbl">${TIERS[teams[ti].level].name}</div></div>
+        <div><div class="em">${TIERS[teams[ti].level].art}</div><div class="lbl">${TIERS[teams[ti].level].lineName}</div></div>
       </div></div>`;
     }
   });
@@ -852,7 +853,7 @@ function renderWheelHouseCard(ti, fromL, toL, badgeText, isDown){
     <div class="wac-evolve">
       <div class="wac-tier from">
         <div class="wac-svg">${fromTier.art}</div>
-        <div class="wac-name">${fromTier.name}</div>
+        <div class="wac-name">${fromTier.lineName}</div>
         <div class="wac-rank">Cấp ${fromL+1}/6</div>
       </div>
       <div class="wac-arrow ${badgeCls}">
@@ -862,7 +863,7 @@ function renderWheelHouseCard(ti, fromL, toL, badgeText, isDown){
       </div>
       <div class="wac-tier to ${animCls}">
         <div class="wac-svg">${toTier.art}</div>
-        <div class="wac-name">${toTier.name}</div>
+        <div class="wac-name">${toTier.lineName}</div>
         <div class="wac-rank">Cấp ${toL+1}/6</div>
       </div>
     </div>
@@ -1513,7 +1514,7 @@ let toastT;
   if(location.hash==='#game'){ startGame(); openQuestion(0); }
   if(location.hash==='#wheel'){ startGame(); openWheel(0); }
 })();
-function toast(msg){ const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show");
+function toast(msg){ const el=document.getElementById("toast"); el.innerHTML=msg; el.classList.add("show");
   clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),3200); }
 function confetti(){
   const icons=["🎉","🌟","🎊","⭐","🏵️"];

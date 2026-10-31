@@ -58,8 +58,8 @@ env.renderWheelHouseCard(0, 0, 1, '✨ THỬ NGHIỆM LÊN CẤP');
 assert(box.innerHTML.includes('wac-card up'), 'Card must have "wac-card up" class');
 assert(box.innerHTML.includes('lvlup'), 'To-tier must have "lvlup" class');
 assert(box.innerHTML.includes('+1 CẤP'), 'Badge should show +1 CẤP');
-assert(box.innerHTML.includes(env.TIERS[0].name), 'Should display starting tier name');
-assert(box.innerHTML.includes(env.TIERS[1].name), 'Should display next tier name');
+assert(box.innerHTML.includes(env.TIERS[0].lineName || env.TIERS[0].name), 'Should display starting tier name');
+assert(box.innerHTML.includes(env.TIERS[1].lineName || env.TIERS[1].name), 'Should display next tier name');
 
 // 2. Check renderWheelHouseCard for downgrade
 teams[0].level = 2;
