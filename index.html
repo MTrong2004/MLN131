@@ -212,8 +212,41 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
 @keyframes cfUp{0%{opacity:1; transform:translateY(0) scale(.6);}100%{opacity:0; transform:translateY(-90px) scale(1.3) rotate(40deg);}}
 /* wheel */
 #wheel-wrap{text-align:center; perspective:750px;}
-#wheel{max-width:390px; width:100%; transform:rotateX(10deg); filter:drop-shadow(0 16px 22px rgba(74,52,35,.4)); transition:transform .3s ease;}
-#spin-res{font-size:19px; font-weight:800; margin-top:10px; min-height:28px; color:var(--orange); text-wrap:balance;}
+#wheel{max-width:340px; width:100%; transform:rotateX(10deg); filter:drop-shadow(0 16px 22px rgba(74,52,35,.4)); transition:transform .3s ease;}
+#spin-res{font-size:18px; font-weight:800; margin-top:8px; min-height:26px; color:var(--orange); text-wrap:balance;}
+#wheel-anim-box{margin-top:6px; min-height:0;}
+.wac-card{background:#fff; border:2.5px solid var(--gold); border-radius:12px; padding:6px 10px 8px; text-align:center; animation:cardFlip3D .45s cubic-bezier(.2,1.2,.4,1); box-shadow:2px 3px 0 #e8d9b8; max-width:380px; margin:0 auto;}
+.wac-card.down{border-color:var(--red); box-shadow:2px 3px 0 #ef9a9a;}
+.wac-card.shield{border-color:var(--green); box-shadow:2px 3px 0 #a5d6a7;}
+.wac-header{display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:4px; padding-bottom:3px; border-bottom:1px dashed #ecdab6;}
+.wac-badge{font-size:10.5px; font-weight:900; padding:2px 7px; border-radius:5px; color:#fff; text-transform:uppercase; letter-spacing:.3px;}
+.wac-badge.up{background:var(--orange);}
+.wac-badge.down{background:var(--red);}
+.wac-badge.shield{background:var(--green);}
+.wac-tname{font-weight:900; font-size:12px; color:var(--ink); text-transform:uppercase;}
+.wac-evolve{display:flex; align-items:center; justify-content:space-around; gap:4px;}
+.wac-tier{flex:1 1 0; max-width:130px; text-align:center;}
+.wac-tier .wac-svg svg{width:100%; max-width:65px; height:auto; display:block; margin:0 auto; filter:drop-shadow(1px 2px 0 #e8d9b8);}
+.wac-name{font-size:10.5px; font-weight:800; color:var(--ink); line-height:1.2; margin-top:2px; min-height:22px;}
+.wac-rank{font-size:9.5px; font-weight:700; color:var(--ink-soft);}
+.wac-arrow{flex:0 0 auto; text-align:center; padding:0 4px;}
+.wac-arrow .wac-icon{font-size:18px; line-height:1;}
+.wac-arrow .wac-sym{font-size:15px; font-weight:900; line-height:1; margin:2px 0;}
+.wac-arrow.up .wac-sym{color:var(--orange);}
+.wac-arrow.down .wac-sym{color:var(--red);}
+.wac-arrow .wac-diff{font-size:9.5px; font-weight:900; padding:1px 5px; border-radius:4px; color:#fff;}
+.wac-arrow.up .wac-diff{background:var(--orange);}
+.wac-arrow.down .wac-diff{background:var(--red);}
+.wac-shield-body{display:flex; align-items:center; justify-content:center; gap:8px; padding:6px 4px; font-size:12.5px; color:var(--green);}
+.wac-shield-icon{font-size:24px; animation:pulse 1s infinite;}
+.lvldown{animation:lvldown .55s ease;}
+@keyframes lvldown{
+  0%{transform:scale(1);}
+  25%{transform:scale(0.9) rotate(-4deg); filter:drop-shadow(0 0 10px rgba(198,40,40,.6));}
+  50%{transform:scale(0.85) rotate(4deg);}
+  75%{transform:scale(0.92) rotate(-2deg);}
+  100%{transform:scale(1);}
+}
 /* wheel modal layout */
 .wheel-grid{display:flex; align-items:center; justify-content:center; gap:26px; margin-top:10px;}
 .wheel-col-left{flex:0 0 400px; text-align:center;}
@@ -307,7 +340,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
       </div>
       <div id="q-panel" style="display:none">
         <h2 id="q-title">Câu hỏi 1</h2>
-        <div id="timer-wrap"><div id="timer-bar-bg"><div id="timer-bar"></div></div><div id="timer-txt">60</div></div>
+        <div id="timer-wrap"><div id="timer-bar-bg"><div id="timer-bar"></div></div><div id="timer-txt">20</div></div>
         <p id="q-text"></p>
         <div id="q-opts"></div>
         <div id="q-explain"></div>
@@ -341,6 +374,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
       <div class="wheel-col-left">
         <div id="wheel-wrap"><canvas id="wheel" width="400" height="400"></canvas></div>
         <div id="spin-res"></div>
+        <div id="wheel-anim-box"></div>
         <div class="row" style="margin-top:10px; justify-content:center; gap:10px;">
           <button class="btn" id="btn-spin" onclick="spin()">Mạo hiểm quay! 🎰</button>
           <button class="btn ghost" id="btn-skip-wheel" onclick="skipWheel()">Bảo toàn cấp 🛡️</button>
@@ -351,63 +385,63 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
       <div class="wheel-col-right">
         <div class="wheel-table">
           <div class="wt-title">
-            <span>📋 Bảng phân loại vật phẩm</span>
-            <span style="font-size:12px; color:var(--orange); font-weight:700;">8 ô quay</span>
+            <span>📋 Hiệu ứng 8 ô quay</span>
+            <span style="font-size:12px; color:var(--orange); font-weight:700;">8 ô</span>
           </div>
 
           <!-- Nhóm có lợi -->
           <div class="wt-sec good">
-            <div class="wt-sec-title">🟢 Nhóm có lợi (3 ô · Cơ hội bứt phá)</div>
+            <div class="wt-sec-title">🟢 Có lợi (3 ô)</div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#d9531f">🚀 TĂNG TỐC</span>
-              <span class="wt-desc">Nhảy vọt <b>+2 cấp</b> phát&nbsp;triển</span>
+              <span class="wt-desc"><b>+2 cấp</b></span>
             </div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#d4ac0d">⬆️ TIẾN 1 CẤP</span>
-              <span class="wt-desc">Tiến thêm <b>+1 cấp</b> vững&nbsp;chắc</span>
+              <span class="wt-desc"><b>+1 cấp</b></span>
             </div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#27ae60">🛡️ KHIÊN HỘ</span>
-              <span class="wt-desc">Nhận <b>Khiên bảo&nbsp;hộ</b> chặn biến&nbsp;cố</span>
+              <span class="wt-desc">Nhận <b>Khiên bảo hộ</b></span>
             </div>
           </div>
 
           <!-- Nhóm tấn công đối thủ -->
           <div class="wt-sec attack">
-            <div class="wt-sec-title">🟣 Nhóm tấn công (2 ô · Tác động đối thủ)</div>
+            <div class="wt-sec-title">🟣 Tấn công (2 ô)</div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#7b1fa2">⚡ TẤN CÔNG</span>
-              <span class="wt-desc">Đội bạn <b>lùi 1 cấp</b> (khiên đỡ)</span>
+              <span class="wt-desc">Đội bạn <b>-1 cấp</b></span>
             </div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#0277bd">🎯 BỨT PHÁ</span>
-              <span class="wt-desc">Mình <b>+1 cấp</b>, đội bạn <b>lùi 1 cấp</b></span>
+              <span class="wt-desc">Mình <b>+1</b>, bạn <b>-1</b></span>
             </div>
           </div>
 
           <!-- Nhóm bất lợi cho đội mình (màu đỏ) -->
           <div class="wt-sec bad">
-            <div class="wt-sec-title">🔴 Nhóm bất lợi (2 ô · Rủi ro mạo hiểm)</div>
+            <div class="wt-sec-title">🔴 Bất lợi (2 ô)</div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#c0392b">⚠️ THỬ THÁCH</span>
-              <span class="wt-desc">Bản làng <b>tự lùi 1 cấp</b> (khiên đỡ)</span>
+              <span class="wt-desc">Mình <b>-1 cấp</b></span>
             </div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#d35400">🤝 CHI VIỆN</span>
-              <span class="wt-desc">Đội bạn bất ngờ được <b>+1 cấp</b></span>
+              <span class="wt-desc">Đội bạn <b>+1 cấp</b></span>
             </div>
           </div>
 
           <!-- Nhóm trung lập -->
           <div class="wt-sec neutral">
-            <div class="wt-sec-title">⚪ Nhóm trung lập (1 ô · An toàn)</div>
+            <div class="wt-sec-title">⚪ An toàn (1 ô)</div>
             <div class="wt-item">
               <span class="wt-badge" style="background:#78909c">🌿 HẸN LẦN SAU</span>
-              <span class="wt-desc"><b>Giữ nguyên</b> cấp độ hiện&nbsp;tại</span>
+              <span class="wt-desc"><b>Giữ nguyên</b> cấp</span>
             </div>
           </div>
 
-          <div class="wt-note">💡 Tỷ lệ: <b>37.5%</b> có lợi · <b>25%</b> tấn công · <b>25%</b> rủi ro bất&nbsp;lợi · <b>12.5%</b> an&nbsp;toàn</div>
+          <div class="wt-note">💡 Khiên bảo hộ tự động chặn đòn tấn công &amp; lùi cấp</div>
         </div>
       </div>
     </div>
@@ -710,17 +744,17 @@ function openQuestion(i){
   startTimer(); renderAll();
 }
 function startTimer(){
-  clearInterval(timerInt); timeLeft=60; updTimer();
+  clearInterval(timerInt); timeLeft=20; updTimer();
   timerInt=setInterval(()=>{ timeLeft--; updTimer();
     if(timeLeft<=0){ clearInterval(timerInt); sound.play("timeUp"); toast("⏰ Đã hết thời gian suy nghĩ!"); }
     else if(timeLeft<=5){ sound.play("tick"); } },1000);
 }
 function updTimer(){
-  const pct=Math.max(0,timeLeft/60*100);
+  const pct=Math.max(0,timeLeft/20*100);
   document.getElementById("timer-bar").style.width=pct+"%";
-  document.getElementById("timer-bar").style.background=timeLeft<=10?"var(--red)":(timeLeft<=30?"var(--gold)":"var(--green)");
+  document.getElementById("timer-bar").style.background=timeLeft<=5?"var(--red)":(timeLeft<=10?"var(--gold)":"var(--green)");
   const tx=document.getElementById("timer-txt"); tx.textContent=timeLeft+"s";
-  tx.classList.toggle("urgent",timeLeft<=10);
+  tx.classList.toggle("urgent",timeLeft<=5);
 }
 function revealAnswer(){
   sound.play("reveal");
@@ -787,12 +821,62 @@ function showUpgradeResult(before){
   box.innerHTML=h;
 }
 function miniConfetti(el){
+  if(!el || typeof el.getBoundingClientRect !== 'function' || !document || !document.body) return;
   const r=el.getBoundingClientRect(), icons=["🎉","⭐","✨","🎊"];
   for(let i=0;i<14;i++){ const s=document.createElement("div"); s.className="mini-cf";
     s.textContent=icons[Math.floor(Math.random()*icons.length)];
     s.style.left=(r.left+Math.random()*r.width)+"px";
     s.style.top=(r.top+r.height*0.35)+"px";
     document.body.appendChild(s); setTimeout(()=>s.remove(),1100); }
+}
+// ponytail: thẻ hoạt họa nhà trong vòng quay, hiển thị quá trình tiến/lùi cấp từng bậc trực quan
+function renderWheelHouseCard(ti, fromL, toL, badgeText, isDown){
+  const t=teams[ti], fromTier=TIERS[fromL], toTier=TIERS[toL];
+  const box=document.getElementById("wheel-anim-box");
+  if(!box) return;
+  const isUp=toL>fromL;
+  const diffTxt=isUp?`+${toL-fromL} CẤP`:`-${fromL-toL} CẤP`;
+  const icon=isUp?"🏗️🔨":"💥⚠️";
+  const arr=isUp?"➡️":"⬇️";
+  const badgeCls=isUp?"up":"down";
+  const animCls=isUp?"lvlup":"lvldown";
+  box.innerHTML=`<div class="wac-card ${badgeCls}">
+    <div class="wac-header">
+      <span class="wac-badge ${badgeCls}">${badgeText}</span>
+      <span class="wac-tname">✨ ${t.name}</span>
+    </div>
+    <div class="wac-evolve">
+      <div class="wac-tier from">
+        <div class="wac-svg">${fromTier.art}</div>
+        <div class="wac-name">${fromTier.name}</div>
+        <div class="wac-rank">Cấp ${fromL+1}/6</div>
+      </div>
+      <div class="wac-arrow ${badgeCls}">
+        <div class="wac-icon">${icon}</div>
+        <div class="wac-sym">${arr}</div>
+        <div class="wac-diff">${diffTxt}</div>
+      </div>
+      <div class="wac-tier to ${animCls}">
+        <div class="wac-svg">${toTier.art}</div>
+        <div class="wac-name">${toTier.name}</div>
+        <div class="wac-rank">Cấp ${toL+1}/6</div>
+      </div>
+    </div>
+  </div>`;
+}
+function renderWheelShieldCard(ti){
+  const t=teams[ti], box=document.getElementById("wheel-anim-box");
+  if(!box) return;
+  box.innerHTML=`<div class="wac-card shield">
+    <div class="wac-header">
+      <span class="wac-badge shield">🛡️ KHIÊN BẢO HỘ</span>
+      <span class="wac-tname">✨ ${t.name}</span>
+    </div>
+    <div class="wac-shield-body">
+      <span class="wac-shield-icon">🛡️</span>
+      <span><b>${t.name}</b> đã kích hoạt <b>Khiên bảo hộ</b> sẵn sàng chặn biến cố!</span>
+    </div>
+  </div>`;
 }
 /* Về bảng điều khiển (vẫn ở nguyên màn hình, không chuyển trang) */
 function backToControl(){
@@ -825,6 +909,7 @@ function openWheel(ti){
     else descEl.innerHTML=`⚖️ <b>Thế trận giằng co!</b> Hai đội đang ngang tài ngang sức — Mỗi lượt quay đều có thể xoay chuyển cục&nbsp;diện!`;
   }
   document.getElementById("spin-res").textContent="";
+  const animBox=document.getElementById("wheel-anim-box"); if(animBox) animBox.innerHTML="";
   const spinBtn=document.getElementById("btn-spin");
   spinBtn.style.display="";
   spinBtn.innerHTML="Mạo hiểm quay! 🎰";
@@ -1108,6 +1193,7 @@ function skipWheel(){
   sound.play("click");
   const me=wheelTeam;
   toast(`🛡️ ${teams[me].name} chọn an toàn, bảo&nbsp;toàn thành&nbsp;quả!`);
+  const animBox=document.getElementById("wheel-anim-box"); if(animBox) animBox.innerHTML="";
   document.getElementById("ov-wheel").classList.remove("show");
   if(spinQueue.length>1){
     spinQueue.shift();
@@ -1120,73 +1206,228 @@ function skipWheel(){
 function applyWheel(idx){
   const me=wheelTeam, foe=1-wheelTeam, t=teams[me], f=teams[foe], ef=WHEEL[idx].effect;
   const res=document.getElementById("spin-res");
-  document.getElementById("btn-wheel-done").style.display="";
+  const animBox=document.getElementById("wheel-anim-box");
+  const doneBtn=document.getElementById("btn-wheel-done");
+  doneBtn.style.display="none";
+
+  const finishWheel=()=>{ spinning=false; doneBtn.style.display=""; };
+
   const foeBlocked=()=>{
     if(f.shield){
-      f.shield=false; renderAll(); sound.play("wheelShieldBlock"); return true;
+      f.shield=false; renderAll(); sound.play("wheelShieldBlock");
+      res.innerHTML=`🛡️ Khiên của ${f.name} kích hoạt — chặn đứng đòn tấn công!`;
+      renderWheelShieldCard(foe);
+      finishWheel();
+      return true;
     }
     return false;
   };
-  if(ef==="up2"){ sound.play("wheelUp2"); levelUp(me,2,true); res.innerHTML="🚀 Xuất sắc! "+t.name+" tăng tốc nhảy vọt 2&nbsp;cấp!"; }
-  if(ef==="up1"){ sound.play("wheelUp1"); levelUp(me,1,true); res.innerHTML="⬆️ Tiến bộ vững chắc! "+t.name+" lên thêm 1&nbsp;cấp!"; }
-  if(ef==="shield"){ sound.play("wheelShield"); t.shield=true; renderAll(); res.innerHTML="🛡️ "+t.name+" nhận Khiên bảo hộ! Sẵn sàng chặn biến cố hoặc đòn tấn&nbsp;công."; }
+
+  if(ef==="up2"){
+    const from0=t.level, canAdd=Math.min(2, TIERS.length-1-from0);
+    if(canAdd===0){
+      sound.play("wheelMiss");
+      res.innerHTML=`🌟 ${t.name} đã đạt cấp độ phát triển kiểu mẫu cao nhất!`;
+      finishWheel();
+      return;
+    }
+    sound.play("wheelUp1");
+    t.level=from0+1;
+    renderTeam(me);
+    renderWheelHouseCard(me, from0, t.level, canAdd===2?"✨ NÂNG CẤP BẬC 1/2 (+1 CẤP)":"✨ NÂNG CẤP VỮNG CHẮC (+1 CẤP)");
+    miniConfetti(animBox);
+    miniConfetti(document.getElementById("team"+me));
+    res.innerHTML=`🚀 ${t.name} tăng tốc: thăng cấp lên “${TIERS[t.level].name}”!`;
+
+    if(canAdd===2){
+      setTimeout(()=>{
+        sound.play("wheelUp2");
+        const from1=t.level;
+        t.level=from1+1;
+        renderTeam(me);
+        renderWheelHouseCard(me, from1, t.level, "🚀 NÂNG CẤP BẬC 2/2 (+2 CẤP THÀNH CÔNG!)");
+        miniConfetti(animBox);
+        miniConfetti(document.getElementById("team"+me));
+        res.innerHTML=`🚀 Xuất sắc! ${t.name} hoàn tất nhảy vọt 2 cấp: “${TIERS[t.level].name}”!`;
+        setTimeout(finishWheel, 700);
+      }, 1250);
+    } else {
+      setTimeout(finishWheel, 700);
+    }
+  }
+
+  if(ef==="up1"){
+    const from=t.level;
+    if(from>=TIERS.length-1){
+      sound.play("wheelMiss");
+      res.innerHTML=`🌟 ${t.name} đã đạt cấp độ phát triển kiểu mẫu cao nhất!`;
+      finishWheel();
+      return;
+    }
+    sound.play("wheelUp1");
+    t.level=from+1;
+    renderTeam(me);
+    renderWheelHouseCard(me, from, t.level, "⬆️ TIẾN BỘ VỮNG CHẮC (+1 CẤP)");
+    miniConfetti(animBox);
+    miniConfetti(document.getElementById("team"+me));
+    res.innerHTML=`⬆️ Tiến bộ vững chắc! ${t.name} lên thêm 1 cấp: “${TIERS[t.level].name}”!`;
+    setTimeout(finishWheel, 700);
+  }
+
+  if(ef==="shield"){
+    sound.play("wheelShield");
+    t.shield=true;
+    renderAll();
+    renderWheelShieldCard(me);
+    res.innerHTML=`🛡️ ${t.name} nhận Khiên bảo hộ! Sẵn sàng chặn biến cố hoặc đòn tấn công.`;
+    setTimeout(finishWheel, 600);
+  }
+
   if(ef==="raid"){
     sound.play("wheelRaid");
-    if(foeBlocked()){
-      res.innerHTML="🛡️ Khiên của "+f.name+" kích hoạt — chặn đứng đòn tấn công!";
-    } else if(f.level===0){
+    if(foeBlocked()) return;
+    if(f.level===0){
       sound.play("wheelMiss");
-      res.innerHTML="🌱 "+f.name+" đang ở cấp khởi đầu — đòn tấn công trôi qua bình yên!";
-    } else {
-      f.level--; renderAll(); sound.play("wheelDown");
-      res.innerHTML="⚡ Tấn công chuẩn xác! "+f.name+" bị kéo lùi 1&nbsp;cấp!";
+      res.innerHTML=`🌱 ${f.name} đang ở cấp khởi đầu — đòn tấn công trôi qua bình yên!`;
+      finishWheel();
+      return;
     }
+    const from=f.level;
+    f.level=from-1;
+    sound.play("wheelDown");
+    renderTeam(foe);
+    renderWheelHouseCard(foe, from, f.level, "⚡ TẤN CÔNG: ĐỐI THỦ LÙI 1 CẤP", true);
+    res.innerHTML=`⚡ Tấn công chuẩn xác! ${f.name} bị kéo lùi về: “${TIERS[f.level].name}”!`;
+    setTimeout(finishWheel, 700);
   }
+
   if(ef==="steal"){
     sound.play("wheelSteal");
-    if(foeBlocked()){
-      res.innerHTML="🛡️ Khiên của "+f.name+" đã đỡ đòn bứt phá từ "+t.name+"!";
-    } else if(f.level>0){
-      f.level--; levelUp(me,1,true);
-      res.innerHTML="🎯 Bứt phá ngoạn mục! "+t.name+" vươn lên 1 cấp và kéo "+f.name+" lùi 1&nbsp;cấp!";
+    if(f.shield){
+      f.shield=false;
+      renderAll();
+      sound.play("wheelShieldBlock");
+      const from=t.level;
+      if(from<TIERS.length-1){
+        t.level=from+1;
+        renderTeam(me);
+        renderWheelHouseCard(me, from, t.level, "🎯 BỨT PHÁ VƯƠN LÊN (+1 CẤP)");
+        miniConfetti(animBox);
+        miniConfetti(document.getElementById("team"+me));
+        res.innerHTML=`🛡️ Khiên của ${f.name} đã đỡ đòn, nhưng ${t.name} vẫn bứt phá lên: “${TIERS[t.level].name}”!`;
+      } else {
+        res.innerHTML=`🛡️ Khiên của ${f.name} đã đỡ đòn bứt phá từ ${t.name}!`;
+      }
+      setTimeout(finishWheel, 700);
+      return;
+    }
+    const foeCanDrop=f.level>0, meCanUp=t.level<TIERS.length-1;
+    if(!foeCanDrop && !meCanUp){
+      sound.play("wheelMiss");
+      res.innerHTML="🎯 Giữ nguyên vị thế hiện tại — cả hai đội giữ vững cấp độ!";
+      finishWheel();
+      return;
+    }
+    if(foeCanDrop){
+      const fromF=f.level;
+      f.level=fromF-1;
+      sound.play("wheelDown");
+      renderTeam(foe);
+      renderWheelHouseCard(foe, fromF, f.level, "⚡ BỨT PHÁ: KÉO ĐỐI THỦ LÙI 1 CẤP", true);
+      res.innerHTML=`🎯 Bứt phá! Kéo lùi ${f.name} về “${TIERS[f.level].name}”...`;
+
+      if(meCanUp){
+        setTimeout(()=>{
+          const fromM=t.level;
+          t.level=fromM+1;
+          sound.play("wheelUp1");
+          renderTeam(me);
+          renderWheelHouseCard(me, fromM, t.level, "🎯 BỨT PHÁ: MÌNH VƯƠN LÊN (+1 CẤP)");
+          miniConfetti(animBox);
+          miniConfetti(document.getElementById("team"+me));
+          res.innerHTML=`🎯 Bứt phá ngoạn mục! ${t.name} vươn lên “${TIERS[t.level].name}” và kéo ${f.name} lùi 1 cấp!`;
+          setTimeout(finishWheel, 700);
+        }, 1250);
+      } else {
+        setTimeout(finishWheel, 700);
+      }
     } else {
-      levelUp(me,1,true);
-      res.innerHTML="🎯 "+f.name+" đang ở cấp khởi đầu — "+t.name+" tiến thêm 1 cấp bứt&nbsp;phá!";
+      const fromM=t.level;
+      t.level=fromM+1;
+      sound.play("wheelUp1");
+      renderTeam(me);
+      renderWheelHouseCard(me, fromM, t.level, "🎯 BỨT PHÁ: MÌNH VƯƠN LÊN (+1 CẤP)");
+      miniConfetti(animBox);
+      miniConfetti(document.getElementById("team"+me));
+      res.innerHTML=`🎯 ${f.name} đang ở cấp khởi đầu — ${t.name} tiến thêm 1 cấp bứt phá lên “${TIERS[t.level].name}”!`;
+      setTimeout(finishWheel, 700);
     }
   }
+
   if(ef==="down1"){
     if(t.shield){
-      t.shield=false; renderAll(); sound.play("wheelShieldBlock");
-      res.innerHTML="🛡️ May mắn thay! Khiên bảo hộ đã kích hoạt đỡ biến cố — "+t.name+" an toàn giữ nguyên cấp&nbsp;độ!";
-    } else if(t.level===0){
-      sound.play("wheelMiss");
-      res.innerHTML="🌱 "+t.name+" đang ở bước đầu khởi dựng — giữ vững tinh thần phát&nbsp;triển!";
-    } else {
-      t.level--; renderAll(); sound.play("wheelDown");
-      res.innerHTML="⚡ Biến cố bất ngờ! "+t.name+" tạm lùi 1 cấp để củng cố nền&nbsp;tảng!";
+      t.shield=false;
+      renderAll();
+      sound.play("wheelShieldBlock");
+      renderWheelShieldCard(me);
+      res.innerHTML=`🛡️ May mắn thay! Khiên bảo hộ đã kích hoạt đỡ biến cố — ${t.name} an toàn giữ nguyên cấp độ!`;
+      setTimeout(finishWheel, 700);
+      return;
     }
+    if(t.level===0){
+      sound.play("wheelMiss");
+      res.innerHTML=`🌱 ${t.name} đang ở bước đầu khởi dựng — giữ vững tinh thần phát triển!`;
+      finishWheel();
+      return;
+    }
+    const from=t.level;
+    t.level=from-1;
+    sound.play("wheelDown");
+    renderTeam(me);
+    renderWheelHouseCard(me, from, t.level, "⚠️ THỬ THÁCH: BẢN LÀNG TỰ LÙI 1 CẤP", true);
+    res.innerHTML=`⚡ Biến cố bất ngờ! ${t.name} tạm lùi về “${TIERS[t.level].name}” để củng cố nền tảng!`;
+    setTimeout(finishWheel, 700);
   }
+
   if(ef==="aid"){
     sound.play("wheelAid");
     if(f.level>=TIERS.length-1){
-      res.innerHTML="🌟 Đội bạn ("+f.name+") đã đạt cấp kiểu mẫu cao nhất — tinh thần tương trợ lan&nbsp;tỏa!";
-    } else {
-      levelUp(foe,1,true);
-      res.innerHTML="🤝 Tinh thần tương trợ! Đội bạn ("+f.name+") bất ngờ được chi viện vươn lên 1&nbsp;cấp!";
+      res.innerHTML=`🌟 Đội bạn (${f.name}) đã đạt cấp kiểu mẫu cao nhất — tinh thần tương trợ lan tỏa!`;
+      finishWheel();
+      return;
     }
+    const from=f.level;
+    f.level=from+1;
+    renderTeam(foe);
+    renderWheelHouseCard(foe, from, f.level, "🤝 CHI VIỆN ĐỘI BẠN (+1 CẤP)");
+    miniConfetti(animBox);
+    miniConfetti(document.getElementById("team"+foe));
+    res.innerHTML=`🤝 Tinh thần tương trợ! Đội bạn (${f.name}) bất ngờ được chi viện vươn lên: “${TIERS[f.level].name}”!`;
+    setTimeout(finishWheel, 700);
   }
-  if(ef==="miss"){ sound.play("wheelMiss"); res.innerHTML="🌿 Giữ nguyên vị thế hiện tại — bảo toàn lực lượng cho câu hỏi tiếp&nbsp;theo!"; }
+
+  if(ef==="miss"){
+    sound.play("wheelMiss");
+    res.innerHTML="🌿 Giữ nguyên vị thế hiện tại — bảo toàn lực lượng cho câu hỏi tiếp theo!";
+    finishWheel();
+  }
+
   res.classList.remove("pop"); void res.offsetWidth; res.classList.add("pop");
-  spinning=false;
 }
 function applyTieBreaker(winner){
   const loser=1-winner;
+  const fromW=teams[winner].level, fromL=teams[loser].level;
   if(teams[winner].level===TIERS.length-1 && teams[loser].level===TIERS.length-1){
     teams[loser].level=TIERS.length-2;
+    renderTeam(loser);
+    renderWheelHouseCard(loser, fromL, teams[loser].level, "⚡ ĐỊNH ĐOẠT: Á QUÂN", true);
   } else {
     teams[winner].level=Math.min(TIERS.length-1, teams[winner].level+1);
+    renderTeam(winner);
+    renderWheelHouseCard(winner, fromW, teams[winner].level, "🏆 ĐỊNH ĐOẠT QUÁN QUÂN (+1 CẤP)");
+    miniConfetti(document.getElementById("wheel-anim-box"));
+    miniConfetti(document.getElementById("team"+winner));
   }
-  renderAll();
   sound.play("victory");
   const res=document.getElementById("spin-res");
   res.innerHTML=`🏆 <b>ĐỊNH ĐOẠT THÀNH CÔNG:</b> Chúc mừng <b>${teams[winner].name}</b> bứt phá giành ngôi <b>QUÁN QUÂN</b>!`;
@@ -1206,6 +1447,7 @@ function openTieBreaker(){
     descEl.innerHTML="⚖️ <b>Hai đội đang hòa sát nút!</b> Vòng quay may mắn định đoạt sẽ tìm ra đội duy nhất giành chiến&nbsp;thắng chung&nbsp;cuộc!";
   }
   document.getElementById("spin-res").textContent="";
+  const animBox=document.getElementById("wheel-anim-box"); if(animBox) animBox.innerHTML="";
   const spinBtn=document.getElementById("btn-spin");
   spinBtn.style.display="";
   spinBtn.innerHTML="Quay định đoạt Quán quân! 🏆";
@@ -1217,6 +1459,7 @@ function openTieBreaker(){
 }
 function closeWheel(){
   sound.play("click");
+  const animBox=document.getElementById("wheel-anim-box"); if(animBox) animBox.innerHTML="";
   document.getElementById("ov-wheel").classList.remove("show");
   if(isTieBreaker){
     isTieBreaker=false;
