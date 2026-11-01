@@ -317,7 +317,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
   <p class="subtitle"><b>Vấn đề dân tộc trong thời kỳ quá độ lên chủ nghĩa xã&nbsp;hội</b><br>
   Hai dãy lớp là hai bản làng — chung sức thi đua, cùng nhau tiến&nbsp;bộ!</p>
   <ul class="rules">
-    <li>❓ <b>6 câu hỏi</b> (20&nbsp;giây/câu) — Hai đội đồng loạt giơ bảng chọn đáp&nbsp;án.</li>
+    <li>❓ <b>6 câu hỏi</b> (30&nbsp;giây/câu) — Hai đội đồng loạt giơ bảng chọn đáp&nbsp;án.</li>
     <li>⬆️ Trả lời đúng, <b>bản&nbsp;làng nâng&nbsp;cấp diện mạo</b> — từng bước chuyển mình lên chuẩn xã kiểu mẫu&nbsp;XHCN!</li>
     <li>🎡 Cơ hội <b>quay thưởng may mắn</b> — tăng tốc thăng cấp, nhận khiên bảo hộ hoặc bứt&nbsp;phá thi&nbsp;đua.</li>
     <li>🏆 Đội khang trang hơn sẽ về đích trước — nhưng đích đến cao nhất là <i>cùng nhau tiến&nbsp;bộ!</i></li>
@@ -345,7 +345,7 @@ p,li,.rules,.opt,#q-text,#end-msg{text-wrap:pretty;}
       </div>
       <div id="q-panel" style="display:none">
         <h2 id="q-title">Câu hỏi 1</h2>
-        <div id="timer-wrap"><div id="timer-bar-bg"><div id="timer-bar"></div></div><div id="timer-txt">20</div></div>
+        <div id="timer-wrap"><div id="timer-bar-bg"><div id="timer-bar"></div></div><div id="timer-txt">30</div></div>
         <p id="q-text"></p>
         <div id="q-opts"></div>
         <div id="q-explain"></div>
@@ -749,14 +749,15 @@ function openQuestion(i){
   document.getElementById("btn-next-q").style.display="none";
   startTimer(); renderAll();
 }
+const Q_TIME = 30;
 function startTimer(){
-  clearInterval(timerInt); timeLeft=20; updTimer();
+  clearInterval(timerInt); timeLeft=Q_TIME; updTimer();
   timerInt=setInterval(()=>{ timeLeft--; updTimer();
     if(timeLeft<=0){ clearInterval(timerInt); sound.play("timeUp"); toast("⏰ Đã hết thời gian suy nghĩ!"); }
     else if(timeLeft<=5){ sound.play("tick"); } },1000);
 }
 function updTimer(){
-  const pct=Math.max(0,timeLeft/20*100);
+  const pct=Math.max(0,timeLeft/Q_TIME*100);
   document.getElementById("timer-bar").style.width=pct+"%";
   document.getElementById("timer-bar").style.background=timeLeft<=5?"var(--red)":(timeLeft<=10?"var(--gold)":"var(--green)");
   const tx=document.getElementById("timer-txt"); tx.textContent=timeLeft+"s";
